@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+
 public class PostApiController {
 
     private final PostService postService;
@@ -24,7 +25,6 @@ public class PostApiController {
 
     @PostMapping("/api/poston")
     public Post savePost(@RequestBody PostRequestDto requestDto) {
-
        return postService.save(requestDto);
     }
 
@@ -40,11 +40,9 @@ public class PostApiController {
 
     @PutMapping("api/posts/{id}")
     public boolean updatePost(@PathVariable Long id, String password, @RequestBody PostRequestDto requestDto) {
-
         if(!password.equals(requestDto.getPassword())) {
             return false;
         }
-
         return postService.update(id, requestDto);
     }
 
@@ -56,7 +54,6 @@ public class PostApiController {
         if(!password.equals(requestDto.getPassword())) {
             return false;
         }
-
         return postService.deletePost(id);
     }
 
