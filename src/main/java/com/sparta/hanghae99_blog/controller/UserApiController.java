@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 @RestController
@@ -28,8 +30,8 @@ public class UserApiController {
 
     // 로그인 API
     @PostMapping("/login")
-    public MessageDto login(@RequestBody LoginRequestDto loginRequestDto) {
-        userService.login(loginRequestDto);
+    public MessageDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+        userService.login(loginRequestDto, response);
         return new MessageDto("로그인 성공", 200);
     }
 
