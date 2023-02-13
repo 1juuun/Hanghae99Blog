@@ -24,7 +24,6 @@ public class Post extends Timestamped{
     @Column(nullable = false, columnDefinition = "TEXT")
     private String password;
 
-
     public Post(PostRequestDto requestDto) {
         this.title = requestDto.getTitle();
         this.name = requestDto.getName();
