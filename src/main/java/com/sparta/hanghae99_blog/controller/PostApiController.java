@@ -6,14 +6,15 @@ import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-
 public class PostApiController {
 
     private final PostService postService;
@@ -23,9 +24,10 @@ public class PostApiController {
         return new ModelAndView("index");
     }
 
+    // 게시물 등록
     @PostMapping("/api/poston")
-    public Post savePost(@RequestBody PostRequestDto requestDto) {
-       return postService.save(requestDto);
+    public ResponseEntity<Object> savePost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
+       return ResponseEntity.ok().body(postService.save(requestDto, request));
     }
 
     @GetMapping("/api/posts")
@@ -34,27 +36,25 @@ public class PostApiController {
     }
 
     @GetMapping("/api/posts/{id}")
-    public PostResponseDto getPostByID(@PathVariable Long id) {
-        return postService.getPostById(id);
+    public ResponseEntity<Object> getPostByID(@PathVariable Long id) {
+        return ResponseEntity.ok().body(postService.getPostById(id));
     }
 
-    @PutMapping("api/posts/{id}")
-    public boolean updatePost(@PathVariable Long id, String password, @RequestBody PostRequestDto requestDto) {
-        if(!password.equals(requestDto.getPassword())) {
-            return false;
-        }
-        return postService.update(id, requestDto);
-    }
-
-    @DeleteMapping("/api/posts/{id}")
-    public boolean deletePost(@PathVariable Long id, String password) {
-
-        PostRequestDto requestDto = new PostRequestDto();
-
-        if(!password.equals(requestDto.getPassword())) {
-            return false;
-        }
-        return postService.deletePost(id);
-    }
+//    @PutMapping("api/posts/{id}")
+//    public boolean updatePost(
+//            @PathVariable Long id, @RequestBody PostRequestDto requestDto) {
+//        return postService.update(id, requestDto);
+//    }
+//
+//    @DeleteMapping("/api/posts/{id}")
+//    public boolean deletePost(@PathVariable Long id, String password) {
+//
+//        PostRequestDto requestDto = new PostRequestDto();
+//
+//        if(!password.equals(requestDto.getPassword())) {
+//            return false;
+//        }
+//        return postService.deletePost(id);
+//    }
 
 }
