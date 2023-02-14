@@ -118,6 +118,7 @@ public class PostService {
         }
     }
 
+    // 해당 게시물 삭제
     public Post deletePost(Long id, HttpServletRequest request) {
 
         Post post = new Post();
@@ -153,7 +154,7 @@ public class PostService {
                 throw new IllegalArgumentException("삭제할 권한이 없습니다.");
             }
 
-            // 게시물 수정하기
+            // 게시물 삭제하기
             postRepository.deleteById(id);
             return post;
         } else {
