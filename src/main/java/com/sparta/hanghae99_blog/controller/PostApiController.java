@@ -2,6 +2,7 @@ package com.sparta.hanghae99_blog.controller;
 
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
 
+import com.sparta.hanghae99_blog.dto.PostResponseDto;
 import com.sparta.hanghae99_blog.entity.Post;
 
 import com.sparta.hanghae99_blog.service.PostService;
@@ -33,7 +34,7 @@ public class PostApiController {
 
     // 게시물 전체 조회
     @GetMapping("/api/posts")
-    public List<Post> getPost() {
+    public List<PostResponseDto> getPost() {
         return postService.getPosts();
     }
 
@@ -50,6 +51,7 @@ public class PostApiController {
         return ResponseEntity.ok().body(postService.update(id, requestDto, request));
     }
 
+    // 해당 게시물 삭제
     @DeleteMapping("/api/posts/{id}")
     public ResponseEntity<Object> deletePost(
             @PathVariable Long id, HttpServletRequest request) {

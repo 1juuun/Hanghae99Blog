@@ -1,5 +1,6 @@
 package com.sparta.hanghae99_blog.service;
 
+import com.sparta.hanghae99_blog.dto.MessageDto;
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
 import com.sparta.hanghae99_blog.dto.PostResponseDto;
 import com.sparta.hanghae99_blog.entity.Post;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,9 +30,7 @@ public class PostService {
 
     // 게시물 등록
     @Transactional
-    public Post save(PostRequestDto requestDto, HttpServletRequest request) {
-        Post post = new Post();
-
+    public PostResponseDto save(PostRequestDto requestDto, HttpServletRequest request) {
         // jwt에서 token 가져오기!
         String token = jwtUtil.resolveToken(request);
         Claims claims;
@@ -48,10 +48,8 @@ public class PostService {
                     () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
             );
             // 게시물 저장하기
-            post = postRepository.save(new Post(requestDto, user));
-
-            return post;
-
+            Post post = postRepository.save(new Post(requestDto, user));
+            return new PostResponseDto(post);
         } else {
             throw new IllegalArgumentException("token이 존재하지 않습니다.");
         }
@@ -59,8 +57,17 @@ public class PostService {
 
     // 게시물 전체 리스트 조회
     @Transactional(readOnly = true)
-    public List<Post> getPosts() {
-        return postRepository.findAllByOrderByCreatedAtDesc();
+    public List<PostResponseDto> getPosts() {
+
+
+        List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
+        List<PostResponseDto> postResponseDtoList = new ArrayList<>();
+
+        for(Post post : postList) {
+            postResponseDtoList.add(new PostResponseDto(post));
+        }
+
+        return postResponseDtoList;
     }
 
     // 해당 게시물 조회
@@ -119,9 +126,7 @@ public class PostService {
     }
 
     // 해당 게시물 삭제
-    public Post deletePost(Long id, HttpServletRequest request) {
-
-        Post post = new Post();
+    public MessageDto deletePost(Long id, HttpServletRequest request) {
 
         // jwt에서 token 가져오기!
         String token = jwtUtil.resolveToken(request);
@@ -156,7 +161,7 @@ public class PostService {
 
             // 게시물 삭제하기
             postRepository.deleteById(id);
-            return post;
+            return new MessageDto("success", 200);
         } else {
             throw new IllegalArgumentException("token이 존재하지 않습니다.");
         }
