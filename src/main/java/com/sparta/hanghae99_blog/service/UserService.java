@@ -31,7 +31,7 @@ public class UserService {
             throw new IllegalArgumentException("중복된 이름입니다.");
         }
 
-        User user = new User(username, password);
+        User user = new User(signupRequestDto);
         userRepository.save(user);
     }
 
