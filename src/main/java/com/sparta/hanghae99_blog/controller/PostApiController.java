@@ -1,8 +1,9 @@
 package com.sparta.hanghae99_blog.controller;
 
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
-import com.sparta.hanghae99_blog.dto.PostResponseDto;
+
 import com.sparta.hanghae99_blog.entity.Post;
+
 import com.sparta.hanghae99_blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 
@@ -30,31 +31,29 @@ public class PostApiController {
        return ResponseEntity.ok().body(postService.save(requestDto, request));
     }
 
+    // 게시물 전체 조회
     @GetMapping("/api/posts")
     public List<Post> getPost() {
         return postService.getPosts();
     }
 
+    // 해당 게시물 조회
     @GetMapping("/api/posts/{id}")
     public ResponseEntity<Object> getPostByID(@PathVariable Long id) {
         return ResponseEntity.ok().body(postService.getPostById(id));
     }
 
-//    @PutMapping("api/posts/{id}")
-//    public boolean updatePost(
-//            @PathVariable Long id, @RequestBody PostRequestDto requestDto) {
-//        return postService.update(id, requestDto);
-//    }
-//
-//    @DeleteMapping("/api/posts/{id}")
-//    public boolean deletePost(@PathVariable Long id, String password) {
-//
-//        PostRequestDto requestDto = new PostRequestDto();
-//
-//        if(!password.equals(requestDto.getPassword())) {
-//            return false;
-//        }
-//        return postService.deletePost(id);
-//    }
+    // 해당 게시물 수정
+    @PutMapping("api/posts/{id}")
+    public ResponseEntity<Object> updatePost(
+            @PathVariable Long id, @RequestBody PostRequestDto requestDto,HttpServletRequest request) {
+        return ResponseEntity.ok().body(postService.update(id, requestDto, request));
+    }
+
+    @DeleteMapping("/api/posts/{id}")
+    public ResponseEntity<Object> deletePost(
+            @PathVariable Long id, HttpServletRequest request) {
+        return ResponseEntity.ok().body(postService.deletePost(id, request));
+    }
 
 }

@@ -1,6 +1,7 @@
 package com.sparta.hanghae99_blog.dto;
 
 import com.sparta.hanghae99_blog.entity.Post;
+import com.sparta.hanghae99_blog.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,5 +25,10 @@ public class PostResponseDto {
         this.username = post.getUser().getUsername();
         this.createdAt = post.getCreatedAt();
         this.modifedAt = post.getModifedAt();
+    }
+
+    public void update(PostRequestDto requestDto, User user) {
+        this.title = requestDto.getTitle();
+        this.contents = requestDto.getContents();
     }
 }

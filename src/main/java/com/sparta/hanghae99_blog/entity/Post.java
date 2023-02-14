@@ -1,6 +1,7 @@
 package com.sparta.hanghae99_blog.entity;
 
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,13 +25,14 @@ public class Post extends Timestamped{
     @JoinColumn(name = "USERS_ID", nullable = false)
     private User user;
 
+    @Builder
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
         this.user = user;
     }
 
-    public void update(PostRequestDto requestDto) {
+    public void update(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
