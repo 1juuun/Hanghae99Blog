@@ -1,16 +1,16 @@
 package com.sparta.hanghae99_blog.controller;
 
 import com.sparta.hanghae99_blog.dto.LoginRequestDto;
-import com.sparta.hanghae99_blog.dto.MessageDto;
 import com.sparta.hanghae99_blog.dto.SignupRequestDto;
 import com.sparta.hanghae99_blog.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -23,16 +23,16 @@ public class UserApiController {
 
     // 회원가입 API
     @PostMapping("/signup")
-    public MessageDto signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
+    public ResponseEntity<String> signup(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         userService.signup(signupRequestDto);
-        return new MessageDto("회원가입 성공!", 200);
+        return new ResponseEntity<String>("회원가입 성공!", HttpStatus.OK);
     }
 
     // 로그인 API
     @PostMapping("/login")
-    public MessageDto login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
         userService.login(loginRequestDto, response);
-        return new MessageDto("로그인 성공", 200);
+        return new ResponseEntity<String>("로그인 성공", HttpStatus.OK);
     }
 
 
