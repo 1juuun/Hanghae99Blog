@@ -2,7 +2,11 @@
 #### 12기 B반 황원준
 
 ### UseCase Diagram
-![UseCase Diagram](https://user-images.githubusercontent.com/122272525/216903145-1b1c1ffc-c9d4-4205-a539-fd015a51b4b3.png)
+![다시만든Userdiagram](https://user-images.githubusercontent.com/122272525/218911392-05665abd-f080-4856-8c16-80ecfb9f261a.png)
+
 
 ### API설계
-![블로그api](https://user-images.githubusercontent.com/122272525/217403429-99400eba-9499-4343-b495-6c13b7a5f110.png)
+https://docs.google.com/spreadsheets/d/1zR2KvZRiiOZI7CO4XUt8jO9o0KdpB0YE1VMBEKt0704/edit?usp=sharing
+
+### ERD설계
+![HangHae99Blog (1)](https://user-images.githubusercontent.com/122272525/218911345-fc9024cf-fbaf-4787-b60d-39b1fc620768.png)
