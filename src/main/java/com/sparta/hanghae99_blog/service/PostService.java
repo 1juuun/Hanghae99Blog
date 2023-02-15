@@ -11,14 +11,12 @@ import com.sparta.hanghae99_blog.repository.PostRepository;
 import com.sparta.hanghae99_blog.repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -36,9 +34,9 @@ public class PostService {
         Claims claims;
 
         // 토큰이 있는 경우에만 게시판 조회 가능
-        if(token != null) {
+        if (token != null) {
             // 유효한 토큰일 경우 게시글 작성 가능
-            if(jwtUtil.validateToken(token)) {
+            if (jwtUtil.validateToken(token)) {
                 claims = jwtUtil.getUserInfoFromToken(token);
             } else {
                 throw new IllegalArgumentException("유효하지 않은 Token입니다");
@@ -63,7 +61,7 @@ public class PostService {
         List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
-        for(Post post : postList) {
+        for (Post post : postList) {
             postResponseDtoList.add(new PostResponseDto(post));
         }
 
@@ -75,14 +73,14 @@ public class PostService {
     public PostResponseDto getPostById(Long id) {
 
         Post post = postRepository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
+                .orElseThrow(() -> new IllegalArgumentException("해당 사용자가 없습니다. id=" + id));
 
         return new PostResponseDto(post);
     }
 
     // 해당 게시물 수정
     @Transactional
-    public ResponseEntity<Object> update(
+    public MessageDto update(
             Long id, PostRequestDto requestDto, HttpServletRequest request) {
 
         // jwt에서 token 가져오기!
@@ -90,39 +88,28 @@ public class PostService {
         Claims claims;
 
         // 토큰이 있는 경우에만 게시판 조회 가능
-        if (token != null) {
-
-            // 유효한 토큰일 경우 게시글 작성 가능
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 Token입니다");
-            }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
-            Optional<User> user = userRepository.findByUsername(claims.getSubject());
-            if(user.isEmpty()) {
-                throw new IllegalArgumentException("해당 사용자가 없습니다.");
-            }
-
-            // 해당하는 게시글이 DB에 있는지 확인
-            Optional<Post> post = postRepository.findById(id);
-            if (post.isEmpty()) {
-                throw new IllegalArgumentException("해당하는 글이 존재하지 않습니다");
-            }
-
-            // 선택한 게시글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
-            post = postRepository.findByIdAndUserId(id, user.get().getId());
-            if (post.isEmpty()) { // 일치하는 게시물이 없다면
-                throw new IllegalArgumentException("수정할 권한이 없습니다.");
-            }
-
-            // 게시물 수정하기
-            post.get().update(requestDto, user.get());
-            return ResponseEntity.ok()
-                    .body(new PostResponseDto(post.get()));
-        } else {
+        if (token == null) {
             throw new IllegalArgumentException("token이 존재하지 않습니다.");
         }
+        // 유효한 토큰일 경우 게시글 작성 가능
+        if (jwtUtil.validateToken(token)) {
+            claims = jwtUtil.getUserInfoFromToken(token);
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 Token입니다");
+        }
+        // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(IllegalArgumentException::new);
+        // 해당하는 게시글이 DB에 있는지 확인
+        Post post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        // 선택한 게시글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
+        if (!post.getUser().equals(user)) {
+            throw new IllegalArgumentException("삭제할 권한이 없습니다.");
+        }
+        // 게시물 수정하기
+        post.update(requestDto, user);
+
+        return new MessageDto("수정성공", 200);
+
     }
 
     // 해당 게시물 삭제
@@ -133,38 +120,29 @@ public class PostService {
         Claims claims;
 
         // 토큰이 있는 경우에만 게시판 조회 가능
-        if (token != null) {
-
-            // 유효한 토큰일 경우 게시글 작성 가능
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 Token입니다");
-            }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
-            Optional<User> user = userRepository.findByUsername(claims.getSubject());
-            if(user.isEmpty()) {
-                throw new IllegalArgumentException("해당 사용자가 없습니다.");
-            }
-
-            // 해당하는 게시글이 DB에 있는지 확인
-            Optional<Post> postOptional = postRepository.findById(id);
-            if (postOptional.isEmpty()) {
-                throw new IllegalArgumentException("해당하는 글이 존재하지 않습니다");
-            }
-
-            // 선택한 게시글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
-            postOptional = postRepository.findByIdAndUserId(id, user.get().getId());
-            if (postOptional.isEmpty()) { // 일치하는 게시물이 없다면
-                throw new IllegalArgumentException("삭제할 권한이 없습니다.");
-            }
-
-            // 게시물 삭제하기
-            postRepository.deleteById(id);
-            return new MessageDto("success", 200);
-        } else {
+        if (token == null) {
             throw new IllegalArgumentException("token이 존재하지 않습니다.");
         }
+        // 유효한 토큰일 경우 게시글 작성 가능
+        if (jwtUtil.validateToken(token)) {
+            claims = jwtUtil.getUserInfoFromToken(token);
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 Token입니다");
+        }
+        // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(IllegalArgumentException::new);// new 자리에 메서드 사용 가능
+        // 해당하는 게시글이 DB에 있는지 확인
+        Post post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        // 선택한 게시글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
+        if (!post.getUser().equals(user)) {
+            throw new IllegalArgumentException("삭제할 권한이 없습니다.");
+        }
+        // 게시물 삭제하기
+        postRepository.deleteById(id);
+
+        return new MessageDto("success", 200);
     }
 
 }
+
+
