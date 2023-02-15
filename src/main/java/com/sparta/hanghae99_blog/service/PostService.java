@@ -34,29 +34,27 @@ public class PostService {
         Claims claims;
 
         // 토큰이 있는 경우에만 게시판 조회 가능
-        if (token != null) {
-            // 유효한 토큰일 경우 게시글 작성 가능
-            if (jwtUtil.validateToken(token)) {
-                claims = jwtUtil.getUserInfoFromToken(token);
-            } else {
-                throw new IllegalArgumentException("유효하지 않은 Token입니다");
-            }
-            // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
-            User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
-                    () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
-            );
-            // 게시물 저장하기
-            Post post = postRepository.save(new Post(requestDto, user));
-            return new PostResponseDto(post);
-        } else {
+        if (token == null) {
             throw new IllegalArgumentException("token이 존재하지 않습니다.");
         }
+        // 유효한 토큰일 경우 게시글 작성 가능
+        if (jwtUtil.validateToken(token)) {
+            claims = jwtUtil.getUserInfoFromToken(token);
+        } else {
+            throw new IllegalArgumentException("유효하지 않은 Token입니다");
+        }
+        // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
+        User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(
+                () -> new IllegalArgumentException("사용자가 존재하지 않습니다.")
+        );
+        // 게시물 저장하기
+        Post post = postRepository.save(new Post(requestDto, user));
+        return new PostResponseDto(post);
     }
 
     // 게시물 전체 리스트 조회
     @Transactional(readOnly = true)
     public List<PostResponseDto> getPosts() {
-
 
         List<Post> postList = postRepository.findAllByOrderByCreatedAtDesc();
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
