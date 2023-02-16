@@ -18,9 +18,13 @@ public class User {
     private String username;
     @Column(nullable = false, length = 50)
     private String password;
-    public User(SignupRequestDto signupRequestDto) {
+    @Column(nullable = false)
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
+    public User(SignupRequestDto signupRequestDto, UserRoleEnum role) {
         this.username = signupRequestDto.getUsername();
         this.password = signupRequestDto.getPassword();
+        this.role = role;
     }
 
 }

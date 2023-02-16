@@ -5,6 +5,7 @@ import com.sparta.hanghae99_blog.dto.PostRequestDto;
 import com.sparta.hanghae99_blog.dto.PostResponseDto;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.User;
+import com.sparta.hanghae99_blog.entity.UserRoleEnum;
 import com.sparta.hanghae99_blog.jwt.JwtUtil;
 import com.sparta.hanghae99_blog.repository.PostRepository;
 
@@ -95,18 +96,25 @@ public class PostService {
         } else {
             throw new IllegalArgumentException("유효하지 않은 Token입니다");
         }
+
         // 토큰에서 가져온 사용자 정보를 사용하여 DB조회
         User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(IllegalArgumentException::new);
+
         // 해당하는 게시글이 DB에 있는지 확인
         Post post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        // 선택한 게시글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
-        if (!post.getUser().equals(user)) {
-            throw new IllegalArgumentException("삭제할 권한이 없습니다.");
-        }
-        // 게시물 수정하기
-        post.update(requestDto, user);
 
-        return new MessageDto("수정성공", 200);
+
+        // 사용자 권한 가져오기
+        UserRoleEnum role = user.getRole();
+
+        if(role == UserRoleEnum.ADMIN || post.getUser().equals(user)) {
+            // 게시물 수정하기
+            post.update(requestDto, user);
+        } else {
+            throw new IllegalArgumentException("수정할 권한이 없습니다.");
+        }
+
+        return new MessageDto("success", 200);
 
     }
 
@@ -131,12 +139,16 @@ public class PostService {
         User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(IllegalArgumentException::new);// new 자리에 메서드 사용 가능
         // 해당하는 게시글이 DB에 있는지 확인
         Post post = postRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        // 선택한 게시글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
-        if (!post.getUser().equals(user)) {
+
+        // 사용자 권한 가져오기
+        UserRoleEnum role = user.getRole();
+
+        if(role == UserRoleEnum.ADMIN || post.getUser().equals(user)) {
+            // 게시물 삭제하기
+            postRepository.deleteById(id);
+        } else {
             throw new IllegalArgumentException("삭제할 권한이 없습니다.");
         }
-        // 게시물 삭제하기
-        postRepository.deleteById(id);
 
         return new MessageDto("success", 200);
     }

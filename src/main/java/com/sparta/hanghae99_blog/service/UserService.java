@@ -3,6 +3,7 @@ package com.sparta.hanghae99_blog.service;
 import com.sparta.hanghae99_blog.dto.LoginRequestDto;
 import com.sparta.hanghae99_blog.dto.SignupRequestDto;
 import com.sparta.hanghae99_blog.entity.User;
+import com.sparta.hanghae99_blog.entity.UserRoleEnum;
 import com.sparta.hanghae99_blog.jwt.JwtUtil;
 import com.sparta.hanghae99_blog.repository.UserRepository;
 
@@ -19,6 +20,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+    // ADMIN_TOKEN
+    private static final String ADMIN_TOKEN = "THISISHWANG1JuuunTokenbaby";
 
     @Transactional
     public void signup(SignupRequestDto signupRequestDto) {
@@ -31,7 +34,15 @@ public class UserService {
             throw new IllegalArgumentException("중복된 이름입니다.");
         }
 
-        User user = new User(signupRequestDto);
+        UserRoleEnum role = UserRoleEnum.USER;
+        if(signupRequestDto.isAdmin()) {
+            if(!signupRequestDto.getAdminToken().equals(ADMIN_TOKEN)) {
+                throw new IllegalArgumentException("관리자 암호가 틀려 등록이 불가능합니다.");
+            }
+            role = UserRoleEnum.ADMIN;
+        }
+
+        User user = new User(signupRequestDto, role);
         userRepository.save(user);
     }
 

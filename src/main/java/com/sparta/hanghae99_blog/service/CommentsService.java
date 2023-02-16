@@ -6,6 +6,7 @@ import com.sparta.hanghae99_blog.dto.MessageDto;
 import com.sparta.hanghae99_blog.entity.Comments;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.User;
+import com.sparta.hanghae99_blog.entity.UserRoleEnum;
 import com.sparta.hanghae99_blog.jwt.JwtUtil;
 import com.sparta.hanghae99_blog.repository.CommentsRepository;
 import com.sparta.hanghae99_blog.repository.PostRepository;
@@ -81,12 +82,15 @@ public class CommentsService {
         // 해당 게시물의 댓글이 DB에 있는지 확인
         Comments comments = commentsRepository.findById(id).orElseThrow(IllegalArgumentException::new);
 
-        // 선택한 게시글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
-        if (!comments.getUser().equals(user)) {
+        // 사용자 권한 가져오기
+        UserRoleEnum role = user.getRole();
+
+        if(role == UserRoleEnum.ADMIN || comments.getUser().equals(user)) {
+            // 댓글 수정하기
+            comments.update(id, commentsRequestDto, user);
+        } else {
             throw new IllegalArgumentException("삭제할 권한이 없습니다.");
         }
-        // 댓글 수정하기
-        comments.update(id, commentsRequestDto, user);
 
         return new CommentsResponseDto(comments);
 
@@ -112,12 +116,16 @@ public class CommentsService {
         User user = userRepository.findByUsername(claims.getSubject()).orElseThrow(IllegalArgumentException::new);
         // 해당하는 댓글이 DB에 있는지 확인
         Comments comments = commentsRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        // 선택한 댓글의 작성자와 토큰에서 가져온 사용자 정보가 일치하는지 확인
-        if (!comments.getUser().equals(user)) {
+
+        // 사용자 권한 가져오기
+        UserRoleEnum role = user.getRole();
+
+        if(role == UserRoleEnum.ADMIN || comments.getUser().equals(user)) {
+            // 댓글 삭제하기
+            commentsRepository.deleteById(id);
+        } else {
             throw new IllegalArgumentException("삭제할 권한이 없습니다.");
         }
-        // 댓글 삭제하기
-        commentsRepository.deleteById(id);
 
         return new MessageDto("success", 200);
     }
