@@ -1,11 +1,13 @@
 package com.sparta.hanghae99_blog.dto;
 
+import com.sparta.hanghae99_blog.entity.Comments;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.User;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -15,6 +17,7 @@ public class PostResponseDto {
     private String title;
     private String contents;
     private String username;
+    private List<CommentsResponseDto> commentsList;
     private LocalDateTime createdAt;
     private LocalDateTime modifedAt;
 
@@ -23,6 +26,7 @@ public class PostResponseDto {
         this.title = post.getTitle();
         this.contents = post.getContents();
         this.username = post.getUser().getUsername();
+        this.commentsList = post.getCommentsList().stream().map(CommentsResponseDto::new).toList();
         this.createdAt = post.getCreatedAt();
         this.modifedAt = post.getModifedAt();
     }
