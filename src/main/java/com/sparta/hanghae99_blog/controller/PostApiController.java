@@ -17,42 +17,38 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/api/posts")
 public class PostApiController {
 
     private final PostService postService;
 
-    @GetMapping("/")
-    public ModelAndView home() {
-        return new ModelAndView("index");
-    }
-
     // 게시물 등록
-    @PostMapping("/api/poston")
+    @PostMapping("/on")
     public ResponseEntity<Object> savePost(@RequestBody PostRequestDto requestDto, HttpServletRequest request) {
        return ResponseEntity.ok().body(postService.save(requestDto, request));
     }
 
     // 게시물 전체 조회
-    @GetMapping("/api/posts")
+    @GetMapping("/")
     public List<PostResponseDto> getPost() {
         return postService.getPosts();
     }
 
     // 해당 게시물 조회
-    @GetMapping("/api/posts/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Object> getPostByID(@PathVariable Long id) {
         return ResponseEntity.ok().body(postService.getPostById(id));
     }
 
     // 해당 게시물 수정
-    @PutMapping("api/posts/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updatePost(
             @PathVariable Long id, @RequestBody PostRequestDto requestDto,HttpServletRequest request) {
         return ResponseEntity.ok().body(postService.update(id, requestDto, request));
     }
 
     // 해당 게시물 삭제
-    @DeleteMapping("/api/posts/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deletePost(
             @PathVariable Long id, HttpServletRequest request) {
         return ResponseEntity.ok().body(postService.deletePost(id, request));

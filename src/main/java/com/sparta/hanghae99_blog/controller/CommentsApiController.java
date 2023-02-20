@@ -10,24 +10,24 @@ import javax.servlet.http.HttpServletRequest;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
+@RequestMapping("/api/comments")
 public class CommentsApiController {
 
     private final CommentsService commentsService;
 
     // 댓글 저장
-    @PostMapping("/commentson/{post_id}")
+    @PostMapping("/on/{post_id}")
     public ResponseEntity<Object> commentsOn(@PathVariable Long post_id, @RequestBody CommentsRequestDto commentsRequestDto, HttpServletRequest request) {
         return ResponseEntity.ok().body(commentsService.saveComment(post_id, commentsRequestDto, request));
     }
 
-    @PutMapping("/comments/{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<Object> updateComments(
             @PathVariable Long id, @RequestBody CommentsRequestDto commentsRequestDto, HttpServletRequest request) {
         return ResponseEntity.ok().body(commentsService.updateComment(id, commentsRequestDto, request));
     }
 
-    @DeleteMapping("/comments/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteComments(
             @PathVariable Long id, HttpServletRequest request) {
         return ResponseEntity.ok().body(commentsService.deleteComment(id, request));
