@@ -1,6 +1,5 @@
 package com.sparta.hanghae99_blog.dto;
 
-import com.sparta.hanghae99_blog.entity.Comments;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.User;
 import lombok.Getter;

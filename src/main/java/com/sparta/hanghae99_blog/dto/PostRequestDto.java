@@ -2,7 +2,6 @@ package com.sparta.hanghae99_blog.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
 @NoArgsConstructor

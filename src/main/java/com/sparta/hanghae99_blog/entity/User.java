@@ -1,6 +1,5 @@
 package com.sparta.hanghae99_blog.entity;
 
-import com.sparta.hanghae99_blog.dto.SignupRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,14 +15,15 @@ public class User {
     private Long id;
     @Column(nullable = false, length = 50)
     private String username;
-    @Column(nullable = false, length = 50)
+    @Column(nullable = false)
     private String password;
     @Column(nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
-    public User(SignupRequestDto signupRequestDto, UserRoleEnum role) {
-        this.username = signupRequestDto.getUsername();
-        this.password = signupRequestDto.getPassword();
+
+    public User(String username, String password, UserRoleEnum role) {
+        this.username = username;
+        this.password = password;
         this.role = role;
     }
 
