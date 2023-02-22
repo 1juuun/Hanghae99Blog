@@ -1,15 +1,16 @@
 package com.sparta.hanghae99_blog.service;
 
+import com.sparta.hanghae99_blog.dto.CommentsResponseDto;
 import com.sparta.hanghae99_blog.dto.MessageDto;
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
 import com.sparta.hanghae99_blog.dto.PostResponseDto;
+import com.sparta.hanghae99_blog.entity.Comments;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.User;
 import com.sparta.hanghae99_blog.entity.UserRoleEnum;
-import com.sparta.hanghae99_blog.jwt.JwtUtil;
+import com.sparta.hanghae99_blog.repository.CommentsRepository;
 import com.sparta.hanghae99_blog.repository.PostRepository;
 
-import com.sparta.hanghae99_blog.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,14 +23,14 @@ import java.util.List;
 public class PostService {
 
     private final PostRepository postRepository;
-    private final UserRepository userRepository;
-    private final JwtUtil jwtUtil;
+    private final CommentsRepository commentsRepository;
 
     // 게시물 등록
     @Transactional
     public PostResponseDto save(PostRequestDto requestDto, User user) {
         // 게시물 저장하기
         Post post = postRepository.save(new Post(requestDto, user));
+
         return new PostResponseDto(post);
     }
 
@@ -41,7 +42,9 @@ public class PostService {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
         for (Post post : postList) {
-            postResponseDtoList.add(new PostResponseDto(post));
+            List<Comments> commentsList = commentsRepository.findAllByPostId(post.getId());
+            List<CommentsResponseDto> commentsResponseDtoList = commentsList.stream().map(CommentsResponseDto::new).toList();
+            postResponseDtoList.add(new PostResponseDto(post, commentsResponseDtoList));
         }
 
         return postResponseDtoList;

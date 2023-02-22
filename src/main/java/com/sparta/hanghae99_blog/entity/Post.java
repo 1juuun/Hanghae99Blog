@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Getter
@@ -27,10 +28,9 @@ public class Post extends Timestamped{
     @JoinColumn(name = "USERS_ID", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
-    private List<Comments> commentsList = new ArrayList<>();
+//    @OneToMany
+//    private List<Comments> commentsList = new ArrayList<>();
 
-    @Builder
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();

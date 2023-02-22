@@ -21,9 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CommentsService {
 
-    private final JwtUtil jwtUtil;
     private final CommentsRepository commentsRepository;
-    private final UserRepository userRepository;
     private final PostRepository postRepository;
 
     // 댓글 저장
