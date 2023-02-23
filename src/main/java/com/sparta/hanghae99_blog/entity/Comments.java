@@ -14,12 +14,11 @@ public class Comments extends Timestamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @Column(nullable = false)
     private String comment;
 
     @Column(nullable = false)
-    private Integer likeCount = 0;
+    private int likeCount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -39,6 +38,14 @@ public class Comments extends Timestamped {
         this.id = id;
         this.comment = commentsRequestDto.getComment();
         this.user = user;
+    }
+
+    public void updateLikeCount() {
+        this.likeCount++;
+    }
+
+    public void deleteLikeCount() {
+        this.likeCount--;
     }
 
 }

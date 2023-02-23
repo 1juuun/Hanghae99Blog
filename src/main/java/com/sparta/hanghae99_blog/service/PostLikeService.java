@@ -1,7 +1,6 @@
 package com.sparta.hanghae99_blog.service;
 
 import com.sparta.hanghae99_blog.dto.MessageDto;
-import com.sparta.hanghae99_blog.dto.PostResponseDto;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.PostLike;
 import com.sparta.hanghae99_blog.entity.User;
@@ -27,17 +26,16 @@ public class PostLikeService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시물이 없습니다. id=" + id));;
 
         Optional<PostLike> postLike = postLikeRepository.findByUserAndPost(user, post);
-//        PostResponseDto postResponseDto = new PostResponseDto(post);
 
         // 중복 좋아요 방지
         if(isNotAlreadyLike(user, post)) {
             postLikeRepository.save(new PostLike(user, post));
-//            postResponseDto.addPostLike(post);
+            post.updateLikeCount();
             return new MessageDto("좋아요 성공", 200);
         } else {
             postLikeRepository.delete(postLike.get());
             postLikeRepository.flush();
-//            postResponseDto.minusPostLike();
+            post.deleteLikeCount();
             return new MessageDto("좋아요 취소", 200);
         }
 

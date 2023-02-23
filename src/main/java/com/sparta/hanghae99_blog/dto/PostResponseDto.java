@@ -49,11 +49,4 @@ public class PostResponseDto {
         this.contents = requestDto.getContents();
     }
 
-//    public void addPostLike(Post post) {
-//        this.likeCount = post.getLikeCount()++;
-//    }
-//
-//    public void minusPostLike() {
-//        this.likeCount -= 1;
-//    }
 }

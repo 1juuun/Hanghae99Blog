@@ -17,7 +17,6 @@ public class CommentsLikeService {
     private final CommentsRepository commentsRepository;
     private final CommentsLikeRepository likeRepository;
 
-
     @Transactional
     public MessageDto likeOrDislike(Long id, User user) {
         Comments comments = commentsRepository.findById(id)
@@ -27,12 +26,12 @@ public class CommentsLikeService {
 
         if(isNotAlreadyLike(user, comments)) {
             likeRepository.save(new CommentsLike(user, comments));
-//            postResponseDto.addPostLike(post);
+            comments.updateLikeCount();
             return new MessageDto("좋아요 성공", 200);
         } else {
             likeRepository.delete(commentsLike.get());
             likeRepository.flush();
-//            postResponseDto.minusPostLike();
+            comments.deleteLikeCount();
             return new MessageDto("좋아요 취소", 200);
         }
 

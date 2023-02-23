@@ -1,6 +1,5 @@
 package com.sparta.hanghae99_blog.entity;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -28,4 +27,5 @@ public class PostLike {
         this.user = user;
         this.post = post;
     }
+
 }
