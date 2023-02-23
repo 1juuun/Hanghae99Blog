@@ -1,7 +1,9 @@
 package com.sparta.hanghae99_blog.controller;
 
 import com.sparta.hanghae99_blog.dto.CommentsRequestDto;
+import com.sparta.hanghae99_blog.dto.MessageDto;
 import com.sparta.hanghae99_blog.security.UserDetailsImpl;
+import com.sparta.hanghae99_blog.service.CommentsLikeService;
 import com.sparta.hanghae99_blog.service.CommentsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,14 @@ public class CommentsApiController {
     public ResponseEntity<Object> deleteComments(
             @PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(commentsService.deleteComment(id, userDetails.getUser()));
+    }
+
+    // 댓글 좋아요
+    private final CommentsLikeService commentsLikeService;
+
+    @PostMapping("/like/{id}")
+    public ResponseEntity<MessageDto> commentsLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(commentsLikeService.likeOrDislike(id, userDetails.getUser()));
     }
 
 }
