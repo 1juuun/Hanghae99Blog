@@ -7,10 +7,8 @@ import com.sparta.hanghae99_blog.entity.Comments;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.User;
 import com.sparta.hanghae99_blog.entity.UserRoleEnum;
-import com.sparta.hanghae99_blog.jwt.JwtUtil;
 import com.sparta.hanghae99_blog.repository.CommentsRepository;
 import com.sparta.hanghae99_blog.repository.PostRepository;
-import com.sparta.hanghae99_blog.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

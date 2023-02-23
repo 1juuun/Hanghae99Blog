@@ -1,6 +1,5 @@
 package com.sparta.hanghae99_blog.dto;
 
-import com.sparta.hanghae99_blog.entity.Comments;
 import com.sparta.hanghae99_blog.entity.Post;
 import com.sparta.hanghae99_blog.entity.User;
 import lombok.Getter;
@@ -8,7 +7,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -32,6 +30,7 @@ public class PostResponseDto {
         this.createdAt = post.getCreatedAt();
         this.modifedAt = post.getModifedAt();
     }
+
     public PostResponseDto(Post post, List<CommentsResponseDto> commentsResponseDtoList) {
         this.id = post.getId();
         this.title = post.getTitle();

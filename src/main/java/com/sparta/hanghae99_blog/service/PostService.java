@@ -42,7 +42,7 @@ public class PostService {
         List<PostResponseDto> postResponseDtoList = new ArrayList<>();
 
         for (Post post : postList) {
-            List<Comments> commentsList = commentsRepository.findAllByPostId(post.getId());
+            List<Comments> commentsList = commentsRepository.findAllByPost(post);
             List<CommentsResponseDto> commentsResponseDtoList = commentsList.stream().map(CommentsResponseDto::new).toList();
             postResponseDtoList.add(new PostResponseDto(post, commentsResponseDtoList));
         }

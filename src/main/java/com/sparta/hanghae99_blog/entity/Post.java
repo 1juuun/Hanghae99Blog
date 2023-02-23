@@ -1,14 +1,10 @@
 package com.sparta.hanghae99_blog.entity;
 
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @Getter
 @Entity
