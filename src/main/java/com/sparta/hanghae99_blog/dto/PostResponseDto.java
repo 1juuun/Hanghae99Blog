@@ -18,6 +18,7 @@ public class PostResponseDto {
     private String contents;
     private String username;
     private List<CommentsResponseDto> commentsList;
+    private Integer likeCount;
     private LocalDateTime createdAt;
     private LocalDateTime modifedAt;
 
@@ -27,6 +28,7 @@ public class PostResponseDto {
         this.contents = post.getContents();
         this.username = post.getUser().getUsername();
         this.commentsList = getCommentsList();
+        this.likeCount = post.getLikeCount();
         this.createdAt = post.getCreatedAt();
         this.modifedAt = post.getModifedAt();
     }
@@ -37,6 +39,7 @@ public class PostResponseDto {
         this.contents = post.getContents();
         this.username = post.getUser().getUsername();
         this.commentsList = commentsResponseDtoList;
+        this.likeCount = post.getLikeCount();
         this.createdAt = post.getCreatedAt();
         this.modifedAt = post.getModifedAt();
     }
@@ -45,4 +48,12 @@ public class PostResponseDto {
         this.title = requestDto.getTitle();
         this.contents = requestDto.getContents();
     }
+
+//    public void addPostLike(Post post) {
+//        this.likeCount = post.getLikeCount()++;
+//    }
+//
+//    public void minusPostLike() {
+//        this.likeCount -= 1;
+//    }
 }

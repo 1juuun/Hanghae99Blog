@@ -3,6 +3,7 @@ package com.sparta.hanghae99_blog.entity;
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.*;
 
@@ -19,13 +20,11 @@ public class Post extends Timestamped{
     private String title;
     @Column(nullable = false, columnDefinition = "TEXT")
     private String contents;
-
+    @Column(nullable = false)
+    private Integer likeCount = 0;
     @ManyToOne
     @JoinColumn(name = "USERS_ID", nullable = false)
     private User user;
-
-//    @OneToMany
-//    private List<Comments> commentsList = new ArrayList<>();
 
     public Post(PostRequestDto requestDto, User user) {
         this.title = requestDto.getTitle();

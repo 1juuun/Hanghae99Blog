@@ -1,9 +1,11 @@
 package com.sparta.hanghae99_blog.controller;
 
+import com.sparta.hanghae99_blog.dto.MessageDto;
 import com.sparta.hanghae99_blog.dto.PostRequestDto;
 import com.sparta.hanghae99_blog.dto.PostResponseDto;
 
 import com.sparta.hanghae99_blog.security.UserDetailsImpl;
+import com.sparta.hanghae99_blog.service.PostLikeService;
 import com.sparta.hanghae99_blog.service.PostService;
 import lombok.RequiredArgsConstructor;
 
@@ -50,6 +52,15 @@ public class PostApiController {
     public ResponseEntity<Object> deletePost(
             @PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         return ResponseEntity.ok().body(postService.deletePost(id, userDetails.getUser()));
+    }
+
+    // 좋아요
+    private final PostLikeService likeService;
+
+    // 좋아요 표시
+    @PostMapping("/like/{id}")
+    public ResponseEntity<MessageDto> postLike(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(likeService.likeOrDislike(id, userDetails.getUser()));
     }
 
 }
